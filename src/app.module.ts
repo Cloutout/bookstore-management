@@ -1,3 +1,4 @@
+import { AuthModule } from './auth/auth.module';
 // src/app.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,6 +9,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+        AuthModule, 
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
