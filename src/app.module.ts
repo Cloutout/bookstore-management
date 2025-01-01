@@ -1,3 +1,4 @@
+import { BookstoresModule } from './bookstores/bookstores.module';
 import { BooksModule } from './books/books.module';
 import { AuthModule } from './auth/auth.module';
 // src/app.module.ts
@@ -10,6 +11,7 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+        BookstoresModule, 
         BooksModule, 
         AuthModule, 
     TypeOrmModule.forRoot({
