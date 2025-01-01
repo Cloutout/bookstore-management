@@ -1,3 +1,4 @@
+// src/auth/auth.service.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -8,7 +9,7 @@ import { JwtPayload } from './jwt-payload.interface';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService, // JWT service
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
