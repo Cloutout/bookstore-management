@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable } from 'typeorm';
+// src/users/entities/user.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { Role } from '../../auth/role.enum';
 
 @Entity()
@@ -12,6 +13,6 @@ export class User {
   @Column()
   password: string;
 
-  @Column("simple-array")
+  @Column('simple-array')
   roles: Role[];
 }

@@ -24,7 +24,10 @@ export class BookstoresService {
   }
 
   findOne(id: number): Promise<Bookstore> {
-    return this.bookstoresRepository.findOne(id, { relations: ['books'] });
+    return this.bookstoresRepository.findOne({
+      where: { id },
+      relations: ['books'],
+    });
   }
 
   async update(id: number, updateBookstoreDto: UpdateBookstoreDto): Promise<Bookstore> {

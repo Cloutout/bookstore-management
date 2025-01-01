@@ -22,7 +22,10 @@ export class BooksService {
   }
 
   findOne(id: number): Promise<Book> {
-    return this.booksRepository.findOne(id, { relations: ['bookstores'] });
+    return this.booksRepository.findOne({
+      where: { id },
+      relations: ['bookstores'],
+    });
   }
 
   async update(id: number, updateBookDto: UpdateBookDto): Promise<Book> {
