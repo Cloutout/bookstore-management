@@ -14,7 +14,7 @@ export class CreateUserDto {
     description: 'Name of the user',
     type: String,
     required: true,
-    example: 'Atilla',
+    example: 'Mert',
   })
   @IsString()
   @MinLength(2, { message: 'Name must have at least 2 characters.' })
@@ -25,15 +25,15 @@ export class CreateUserDto {
     description: 'Role of the user',
     type: String,
     required: true,
-    example: 'user',
-    enum: ['user', 'admin', 'manager'],
+    example: 'User',
+    enum: ['User', 'Admin', 'StoreManager'],
   })
   @IsString()
   @IsNotEmpty()
-  @Matches(/^(user|admin|manager)$/, {
-    message: 'ًole must be either user, admin or manager',
+  @Matches(/^(User|Admin|StoreManager)$/, {
+    message: 'ً must be either user, admin or manager',
   })
-  role: string = 'user';
+  role: string = 'User';
 
   @ApiProperty({
     description: 'Email of the user',

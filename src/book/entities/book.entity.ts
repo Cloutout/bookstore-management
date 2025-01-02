@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Bookstore } from 'src/bookstore/entities/bookstore.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Book {
@@ -15,8 +15,6 @@ export class Book {
   @Column({ type: 'int', default: 0 })
   quantity: number;
 
-  @ManyToOne(() => Bookstore, (bookstore) => bookstore.books, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Bookstore, (bookstore) => bookstore.books)
   bookstore: Bookstore;
 }

@@ -11,18 +11,21 @@ export class LoginDto {
     example: 'admin@example.com',
   })
   @IsNotEmpty({ message: 'Email is required' })
-  @IsEmail(null, { message: 'Please provide a valid Email.' })
+  @Matches(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/, {
+    message: 'Please provide valid Email.',
+  })
+  @IsEmail(null, { message: 'Please provide valid Email.' })
   email: string;
 
   @ApiProperty({
     description: 'Password of the user',
     type: String,
     required: true,
-    example: 'Admin123!',
+    example: 'password',
   })
   @IsNotEmpty({ message: 'Password is required' })
   @Matches(passwordRegEx, {
-    message: `Password must be 8-20 characters, include uppercase, lowercase, and a number.`,
+    message: `Password must contain Minimum 8 and maximum 20 characters`,
   })
   password: string;
 }

@@ -11,8 +11,8 @@ import {
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { Role } from '../../core/enums/role.enum';
-import { Roles } from '../../core/decorators/roles.decorator';
+import { Role } from '../../auth/enums/role.enum';
+import { Roles } from '../../auth/decorators/roles.decorator';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Public } from '../../core/decorators/public.decorator';
+import { Public } from '../../auth/decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -31,7 +31,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Seed users',
     description:
-      'Seed users in the database. This endpoint is only available in development mode. It will not work in production. [admin, manager, user] users will be created. The password for all users is "password". The email for the users will be [ admin@example.com, user@example.com, manager@example.com ].',
+      'Seed users in the database. This endpoint is only available in development mode. It will not work in production. [Admin, StoreManager, User] users will be created. The password for all users is "password". The email for the users will be [ admin@example.com, user@example.com, storeManager@example.com ].',
   })
   seed() {
     if (process.env.NODE_ENV !== 'dev') {

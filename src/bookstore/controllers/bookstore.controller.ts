@@ -84,7 +84,7 @@ export class BookstoreController {
   }
 
   @Delete(':bookstoreId/:bookId/:quantity')
-  @Roles(Role.Admin, Role.StoreManager)
+  @Roles(Role.Admin, Role.Manager)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Remove bookstore by book id',
@@ -104,7 +104,7 @@ export class BookstoreController {
   }
 
   @Post('AddBook')
-  @Roles(Role.Admin, Role.StoreManager)
+  @Roles(Role.Admin, Role.Manager)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Add bookstore by book id',
