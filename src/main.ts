@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('My greatest bookstore API')
+    .setTitle('Bookstore Management App API')
     .setDescription(
       'The bookstore API description, the unnecessary route are hidden.',
     )

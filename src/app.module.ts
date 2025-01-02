@@ -15,7 +15,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Load environment variables
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
