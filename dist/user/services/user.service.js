@@ -26,13 +26,32 @@ let UserService = class UserService {
         this.jwtService = jwtService;
     }
     async create(createUserDto) {
-        const item = new user_entity_1.User();
-        item.name = createUserDto.name;
-        item.email = createUserDto.email;
-        item.role = createUserDto.role;
-        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-        item.password = hashedPassword;
-        return this.repo.save(item);
+        const existingUser = await this.repo.findOneBy({
+            email: createUserDto.email,
+        });
+        if (existingUser) {
+            throw new Error('Email already exists!');
+        }
+        const hashedPassword = await this.hashPassword(createUserDto.password);
+        const user = this.repo.create({
+            ...createUserDto,
+            password: hashedPassword,
+        });
+        return this.repo.save(user);
+    }
+    async update(id, updateUserDto) {
+        const existingUser = await this.repo.findOneBy({
+            email: updateUserDto.email,
+        });
+        if (existingUser && existingUser.id !== id) {
+            throw new Error('Email already exists!');
+        }
+        const hashedPassword = await this.hashPassword(updateUserDto.password);
+        const updatedUser = { ...updateUserDto, password: hashedPassword, id };
+        return this.repo.save(updatedUser);
+    }
+    async hashPassword(password) {
+        return bcrypt.hash(password, 10);
     }
     findAll() {
         return this.repo.find();
@@ -40,30 +59,25 @@ let UserService = class UserService {
     findOne(id) {
         return this.repo.findOneBy({ id });
     }
-    async update(id, updateUserDto) {
-        const item = new user_entity_1.User();
-        item.name = updateUserDto.name;
-        item.email = updateUserDto.email;
-        const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-        item.password = hashedPassword;
-        item.role = updateUserDto.role;
-        item.id = id;
-        return this.repo.save(item);
-    }
-    remove(id) {
-        return this.repo.delete(id);
+    async remove(id) {
+        const result = await this.repo.delete(id);
+        if (result.affected) {
+            return { message: 'User successfully deleted.' };
+        }
+        throw new Error('User not found.');
     }
     async validateUser(email, password) {
         const user = await this.repo.findOneBy({ email });
         if (user && (await bcrypt.compare(password, user.password))) {
             const payload = { sub: user.name, email: user.email, role: user.role };
-            return {
-                access_token: await this.jwtService.signAsync(payload),
-            };
+            return { access_token: await this.jwtService.signAsync(payload) };
         }
-        return new common_1.UnauthorizedException();
+        throw new common_1.UnauthorizedException('Invalid email or password.');
     }
     async seed() {
+        if (process.env.NODE_ENV !== 'development') {
+            throw new Error('Seeding is only allowed in development mode.');
+        }
         await this.repo.save(user_seed_1.usersSeed);
     }
 };

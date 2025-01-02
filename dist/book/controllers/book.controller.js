@@ -17,105 +17,79 @@ const common_1 = require("@nestjs/common");
 const book_service_1 = require("../services/book.service");
 const create_book_dto_1 = require("../DTOs/create-book.dto");
 const update_book_dto_1 = require("../DTOs/update-book.dto");
-const public_decorator_1 = require("../../auth/decorators/public.decorator");
-const swagger_1 = require("@nestjs/swagger");
 const assign_book_dto_1 = require("../DTOs/assign-book.dto");
-const role_enum_1 = require("../../auth/enums/role.enum");
+const swagger_1 = require("@nestjs/swagger");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
+const role_enum_1 = require("../../auth/enums/role.enum");
 let BookController = class BookController {
     constructor(bookService) {
         this.bookService = bookService;
     }
-    async create(createBookDto) {
+    create(createBookDto) {
         return this.bookService.create(createBookDto);
     }
     findAll() {
         return this.bookService.findAll();
     }
     findOne(id) {
-        return this.bookService.findOne(+id);
+        return this.bookService.findOne(id);
     }
     update(id, updateBookDto) {
-        return this.bookService.update(+id, updateBookDto);
+        return this.bookService.update(id, updateBookDto);
     }
-    remove(id) {
-        return this.bookService.remove(+id);
-    }
-    async assignBook(assignBookDto) {
+    assignBook(assignBookDto) {
         return this.bookService.assignBook(assignBookDto);
     }
 };
 exports.BookController = BookController;
 __decorate([
     (0, common_1.Post)(),
+    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiTags)('book'),
-    (0, swagger_1.ApiOperation)({
-        summary: 'Create a new book',
-        description: 'Create a new book.',
-    }),
+    (0, swagger_1.ApiOperation)({ summary: 'Create a new book' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_book_dto_1.CreateBookDto]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], BookController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, public_decorator_1.Public)(),
-    (0, swagger_1.ApiTags)('book'),
-    (0, swagger_1.ApiOperation)({
-        summary: 'Get all books',
-        description: 'Retrieve a list of all books.',
-    }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all books' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], BookController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, public_decorator_1.Public)(),
-    (0, swagger_1.ApiTags)('book'),
-    (0, swagger_1.ApiOperation)({
-        summary: 'Get a book by ID',
-        description: 'Retrieve a book by ID.',
-    }),
-    (0, swagger_1.ApiTags)('book'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get a book by ID' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], BookController.prototype, "findOne", null);
 __decorate([
-    (0, swagger_1.ApiExcludeEndpoint)(),
     (0, common_1.Patch)(':id'),
+    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Update a book' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_book_dto_1.UpdateBookDto]),
+    __metadata("design:paramtypes", [Number, update_book_dto_1.UpdateBookDto]),
     __metadata("design:returntype", void 0)
 ], BookController.prototype, "update", null);
 __decorate([
-    (0, swagger_1.ApiExcludeEndpoint)(),
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], BookController.prototype, "remove", null);
-__decorate([
-    (0, swagger_1.ApiTags)('book'),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin, role_enum_1.Role.StoreManager),
-    (0, swagger_1.ApiOperation)({
-        summary: 'Assign a book to a store',
-        description: 'Assign a book to a store.',
-    }),
     (0, common_1.Post)('assign'),
+    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin, role_enum_1.Role.StoreManager),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Assign a book to a store' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [assign_book_dto_1.AssignBookDto]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], BookController.prototype, "assignBook", null);
 exports.BookController = BookController = __decorate([
+    (0, swagger_1.ApiTags)('book'),
     (0, common_1.Controller)('book'),
     __metadata("design:paramtypes", [book_service_1.BookService])
 ], BookController);

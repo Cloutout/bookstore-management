@@ -20,12 +20,7 @@ class CreateUserDto {
 }
 exports.CreateUserDto = CreateUserDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'Name of the user',
-        type: String,
-        required: true,
-        example: 'Mert',
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'Name of the user', example: 'Mert' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(2, { message: 'Name must have at least 2 characters.' }),
     (0, class_validator_1.IsNotEmpty)(),
@@ -34,39 +29,30 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Role of the user',
-        type: String,
-        required: true,
         example: 'user',
         enum: ['user', 'admin', 'storeManager'],
     }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.Matches)(/^(user|admin|storeManager)$/, {
-        message: 'ًole must be either user, admin or manager',
+        message: 'Role must be either "user", "admin", or "storeManager".',
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'Email of the user',
-        type: String,
-        required: true,
-        example: 'admin@admin.com',
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'Email of the user', example: 'admin@admin.com' }),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsEmail)(null, { message: 'Please provide valid Email.' }),
+    (0, class_validator_1.IsEmail)(null, { message: 'Please provide a valid email.' }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "email", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Password of the user',
-        type: String,
-        required: true,
-        example: 'password',
+        example: 'Password123!',
     }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.Matches)(passwordRegEx, {
-        message: `Password must contain Minimum 8 and maximum 20 characters`,
+        message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number.',
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);

@@ -16,11 +16,7 @@ class CreateBookDto {
 }
 exports.CreateBookDto = CreateBookDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The title of a book',
-        minimum: 2,
-        default: 'Book Title',
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'The title of the book', default: 'Book Title' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(2, { message: 'Title must have at least 2 characters.' }),
     (0, class_validator_1.IsNotEmpty)(),
@@ -28,8 +24,7 @@ __decorate([
 ], CreateBookDto.prototype, "title", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
-        description: 'The author of a book',
-        minimum: 2,
+        description: 'The author of the book',
         default: 'Author Name',
     }),
     (0, class_validator_1.IsString)(),

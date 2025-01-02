@@ -8,7 +8,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Bookstore Management App API')
     .setDescription(
-      'The bookstore API description, the unnecessary route are hidden.',
+      'The bookstore API description. Unnecessary routes are hidden.',
     )
     .setVersion('1.0')
     .addBearerAuth()
@@ -17,6 +17,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT || 3000);
+  const port = process.env.API_PORT || 4000;
+  console.log(`Application is running on: http://localhost:${port}/api`);
+  await app.listen(port);
 }
 bootstrap();

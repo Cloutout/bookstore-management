@@ -14,8 +14,5 @@ export declare class BookService {
     findAll(): Promise<any[]>;
     findOne(id: number): Promise<Book>;
     update(id: number, updateBookDto: UpdateBookDto): Promise<Book>;
-    remove(id: number): Promise<{
-        affected?: number;
-    }>;
-    assignBook(assignBookDto: AssignBookDto): Promise<any[]>;
+    assignBook(assignBookDto: AssignBookDto): Promise<any>;
 }

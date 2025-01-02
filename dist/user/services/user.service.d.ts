@@ -8,11 +8,12 @@ export declare class UserService {
     private readonly jwtService;
     constructor(repo: Repository<User>, jwtService: JwtService);
     create(createUserDto: CreateUserDto): Promise<User>;
+    update(id: number, updateUserDto: UpdateUserDto): Promise<User>;
+    hashPassword(password: string): Promise<string>;
     findAll(): Promise<User[]>;
     findOne(id: number): Promise<User>;
-    update(id: number, updateUserDto: UpdateUserDto): Promise<User>;
     remove(id: number): Promise<{
-        affected?: number;
+        message: string;
     }>;
     validateUser(email: string, password: string): Promise<any>;
     seed(): Promise<void>;

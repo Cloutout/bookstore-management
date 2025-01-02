@@ -13,10 +13,6 @@ exports.Book = void 0;
 const typeorm_1 = require("typeorm");
 const availability_entity_1 = require("./availability.entity");
 let Book = class Book {
-    get stores() {
-        const uniqueStores = this.availabilities?.map((availability) => availability.bookstore);
-        return uniqueStores ? Array.from(new Set(uniqueStores)) : [];
-    }
 };
 exports.Book = Book;
 __decorate([

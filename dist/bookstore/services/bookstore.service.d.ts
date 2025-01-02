@@ -8,9 +8,9 @@ export declare class BookstoreService {
     create(createBookstoreDto: CreateBookstoreDto): Promise<Bookstore>;
     findAll(): Promise<any[]>;
     findOne(id: number): Promise<Bookstore>;
-    find(id: number): Promise<Bookstore[]>;
+    updateBookQuantity(bookstoreId: number, bookId: number, quantity: number): Promise<any>;
     update(id: number, updateBookstoreDto: UpdateBookstoreDto): Promise<Bookstore>;
     remove(id: number): Promise<{
-        affected?: number;
+        message: string;
     }>;
 }

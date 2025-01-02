@@ -26,86 +26,70 @@ let BookService = class BookService {
         this.availabilityRepository = availabilityRepository;
     }
     async create(createBookDto) {
-        const item = new book_entity_1.Book();
-        item.title = createBookDto.title;
-        item.author = createBookDto.author;
-        return this.repo.save(item);
-    }
-    async findAll() {
-        const res = await this.repo.find({
-            relations: ['availabilities', 'availabilities.bookstore'],
-        });
-        return res.map((book) => {
-            return {
-                id: book.id,
-                title: book.title,
-                stores: book.availabilities.map((quantity) => ({
-                    id: quantity.bookstore.id,
-                    title: quantity.bookstore.title,
-                    quantity: quantity.quantity,
-                    price: quantity.price,
-                })),
-            };
-        });
-    }
-    findOne(id) {
-        return this.repo.findOne({
-            where: { id },
-            relations: ['availabilities', 'availabilities.bookstore'],
-        });
-    }
-    async update(id, updateBookDto) {
-        const book = await this.repo.findOne({
-            where: { id },
-            relations: ['bookstores'],
-        });
-        if (!book) {
-            throw new common_1.NotFoundException('Book not found');
-        }
-        book.title = updateBookDto.title;
-        book.author = updateBookDto.author;
+        const book = this.repo.create(createBookDto);
         return this.repo.save(book);
     }
-    remove(id) {
-        return this.repo.delete(id);
+    async findAll() {
+        const books = await this.repo.find({
+            relations: ['availabilities', 'availabilities.bookstore'],
+        });
+        return books.map((book) => ({
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            stores: book.availabilities.map((availability) => ({
+                storeId: availability.bookstore.id,
+                storeName: availability.bookstore.title,
+                quantity: availability.quantity,
+                price: availability.price,
+            })),
+        }));
     }
-    async assignBook(assignBookDto) {
+    async findOne(id) {
         const book = await this.repo.findOne({
-            where: { id: assignBookDto.book_id },
+            where: { id },
             relations: ['availabilities', 'availabilities.bookstore'],
         });
         if (!book) {
             throw new common_1.NotFoundException('Book not found');
         }
-        const store = await this.storeRepo.findOne({
-            where: { id: assignBookDto.store_id },
+        return book;
+    }
+    async update(id, updateBookDto) {
+        const book = await this.repo.findOneBy({ id });
+        if (!book)
+            throw new common_1.NotFoundException('Book not found');
+        book.title = updateBookDto.title || book.title;
+        book.author = updateBookDto.author || book.author;
+        return this.repo.save(book);
+    }
+    async assignBook(assignBookDto) {
+        const book = await this.repo.findOneBy({ id: assignBookDto.book_id });
+        if (!book)
+            throw new common_1.NotFoundException('Book not found');
+        const store = await this.storeRepo.findOneBy({
+            id: assignBookDto.store_id,
         });
-        if (!store) {
+        if (!store)
             throw new common_1.NotFoundException('Store not found');
+        const existingAvailability = await this.availabilityRepository.findOne({
+            where: {
+                book: { id: assignBookDto.book_id },
+                bookstore: { id: assignBookDto.store_id },
+            },
+        });
+        if (existingAvailability) {
+            existingAvailability.quantity = assignBookDto.quantity;
+            existingAvailability.price = assignBookDto.price;
+            return this.availabilityRepository.save(existingAvailability);
         }
-        const availability = book.availabilities.find((item) => item.bookstore.id === assignBookDto.store_id);
-        if (availability) {
-            if (assignBookDto.quantity === 0) {
-                await this.availabilityRepository.remove(availability);
-                return;
-            }
-            availability.quantity = assignBookDto.quantity;
-            availability.price = assignBookDto.price;
-            await this.availabilityRepository.save(availability);
-            return;
-        }
-        else {
-            if (assignBookDto.quantity === 0) {
-                return;
-            }
-            const availability = new availability_entity_1.Availability();
-            availability.bookstore = store;
-            availability.quantity = assignBookDto.quantity;
-            availability.price = assignBookDto.price;
-            book.availabilities.push(availability);
-            await this.availabilityRepository.save(availability);
-            await this.repo.save(book);
-        }
+        const availability = this.availabilityRepository.create({
+            book,
+            bookstore: store,
+            quantity: assignBookDto.quantity,
+            price: assignBookDto.price,
+        });
+        return this.availabilityRepository.save(availability);
     }
 };
 exports.BookService = BookService;

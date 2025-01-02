@@ -6,67 +6,66 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { BookstoreService } from '../services/bookstore.service';
 import { CreateBookstoreDto } from '../DTOs/create-bookstore.dto';
-import { UpdateBookstoreDto } from '../DTOs/update-bookstore.dto';
-import { Public } from 'src/auth/decorators/public.decorator';
-import {
-  ApiBearerAuth,
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { UpdateBookQuantityDto } from 'src/bookstore/DTOs/update-book-quantity.dto';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { AuthGuard } from '../../auth/guards/auth.guard';
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { Role } from '../../auth/enums/role.enum';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('bookstore')
 @Controller('bookstore')
 export class BookstoreController {
   constructor(private readonly bookstoreService: BookstoreService) {}
 
-  @ApiTags('bookstore')
-  @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Create a new bookstore',
-    description: 'Create a new bookstore.',
-  })
   @Post()
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a new bookstore' })
   create(@Body() createBookstoreDto: CreateBookstoreDto) {
     return this.bookstoreService.create(createBookstoreDto);
   }
 
-  @ApiTags('bookstore')
-  @ApiOperation({
-    summary: 'Get all bookstores',
-    description: 'Retrieve a list of all bookstores.',
-  })
-  @Public()
   @Get()
+  @ApiOperation({ summary: 'Get all bookstores' })
   findAll() {
     return this.bookstoreService.findAll();
   }
 
-  @Public()
   @Get(':id')
-  @ApiOperation({
-    summary: 'Get a bookstore by ID',
-    description: 'Retrieve a bookstore by ID.',
-  })
-  @ApiTags('bookstore')
-  findOne(@Param('id') id: string) {
-    return this.bookstoreService.find(+id);
+  @ApiOperation({ summary: 'Get a bookstore by ID' })
+  findOne(@Param('id') id: number) {
+    return this.bookstoreService.findOne(id);
   }
 
-  @Patch(':id')
-  @ApiExcludeEndpoint()
-  update(
-    @Param('id') id: string,
-    @Body() updateBookstoreDto: UpdateBookstoreDto,
+  @Patch(':id/book/:bookId')
+  @Roles(Role.Admin, Role.StoreManager)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update book quantity in a bookstore' })
+  updateBookQuantity(
+    @Param('id') bookstoreId: number,
+    @Param('bookId') bookId: number,
+    @Body() updateBookQuantityDto: UpdateBookQuantityDto,
   ) {
-    return this.bookstoreService.update(+id, updateBookstoreDto);
+    return this.bookstoreService.updateBookQuantity(
+      bookstoreId,
+      bookId,
+      updateBookQuantityDto.quantity,
+    );
   }
 
   @Delete(':id')
-  @ApiExcludeEndpoint()
-  remove(@Param('id') id: string) {
-    return this.bookstoreService.remove(+id);
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a bookstore' })
+  remove(@Param('id') id: number) {
+    return this.bookstoreService.remove(id);
   }
 }

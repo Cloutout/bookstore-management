@@ -6,7 +6,7 @@ import { UpdateUserDto } from '../DTOs/update-user.dto';
 import { User } from '../entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { usersSeed } from 'src/user/user.seed';
+import { usersSeed } from '../user.seed';
 
 @Injectable()
 export class UserService {
@@ -16,15 +16,36 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const item: User = new User();
-    item.name = createUserDto.name;
-    item.email = createUserDto.email;
-    item.role = createUserDto.role;
+    const existingUser = await this.repo.findOneBy({
+      email: createUserDto.email,
+    });
+    if (existingUser) {
+      throw new Error('Email already exists!');
+    }
 
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-    item.password = hashedPassword;
+    const hashedPassword = await this.hashPassword(createUserDto.password);
+    const user = this.repo.create({
+      ...createUserDto,
+      password: hashedPassword,
+    });
+    return this.repo.save(user);
+  }
 
-    return this.repo.save(item);
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const existingUser = await this.repo.findOneBy({
+      email: updateUserDto.email,
+    });
+    if (existingUser && existingUser.id !== id) {
+      throw new Error('Email already exists!');
+    }
+
+    const hashedPassword = await this.hashPassword(updateUserDto.password);
+    const updatedUser = { ...updateUserDto, password: hashedPassword, id };
+    return this.repo.save(updatedUser);
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, 10);
   }
 
   findAll(): Promise<User[]> {
@@ -35,36 +56,27 @@ export class UserService {
     return this.repo.findOneBy({ id });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const item: User = new User();
-    item.name = updateUserDto.name;
-    item.email = updateUserDto.email;
-
-    const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);
-    item.password = hashedPassword;
-
-    item.role = updateUserDto.role;
-    item.id = id;
-    return this.repo.save(item);
-  }
-
-  remove(id: number): Promise<{ affected?: number }> {
-    return this.repo.delete(id);
+  async remove(id: number): Promise<{ message: string }> {
+    const result = await this.repo.delete(id);
+    if (result.affected) {
+      return { message: 'User successfully deleted.' };
+    }
+    throw new Error('User not found.');
   }
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.repo.findOneBy({ email });
-
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload = { sub: user.name, email: user.email, role: user.role };
-      return {
-        access_token: await this.jwtService.signAsync(payload),
-      };
+      return { access_token: await this.jwtService.signAsync(payload) };
     }
-    return new UnauthorizedException();
+    throw new UnauthorizedException('Invalid email or password.');
   }
 
   async seed() {
+    if (process.env.NODE_ENV !== 'development') {
+      throw new Error('Seeding is only allowed in development mode.');
+    }
     await this.repo.save(usersSeed);
   }
 }

@@ -15,7 +15,6 @@ const core_1 = require("@nestjs/core");
 const jwt_1 = require("@nestjs/jwt");
 const public_decorator_1 = require("../decorators/public.decorator");
 const roles_decorator_1 = require("../decorators/roles.decorator");
-const role_enum_1 = require("../enums/role.enum");
 let AuthGuard = class AuthGuard {
     constructor(jwtService, reflector) {
         this.jwtService = jwtService;
@@ -36,25 +35,22 @@ let AuthGuard = class AuthGuard {
         }
         try {
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: process.env.SECRET_KEY,
+                secret: process.env.JWT_SECRET || 'secretKey',
             });
             request['user'] = payload;
         }
         catch {
             throw new common_1.UnauthorizedException();
         }
-        const { user } = context.switchToHttp().getRequest();
         const requiredRoles = this.reflector.getAllAndOverride(roles_decorator_1.ROLES_KEY, [
             context.getHandler(),
             context.getClass(),
         ]);
-        if (!requiredRoles && user.role?.includes(role_enum_1.Role.Admin)) {
+        if (!requiredRoles) {
             return true;
         }
-        else if (!requiredRoles) {
-            return false;
-        }
-        return requiredRoles.some((role) => user.role?.includes(role));
+        const user = request['user'];
+        return requiredRoles.some((role) => user.roles?.includes(role));
     }
     extractTokenFromHeader(request) {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];

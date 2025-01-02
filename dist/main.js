@@ -7,13 +7,15 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Bookstore Management App API')
-        .setDescription('The bookstore API description, the unnecessary route are hidden.')
+        .setDescription('The bookstore API description. Unnecessary routes are hidden.')
         .setVersion('1.0')
         .addBearerAuth()
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
-    await app.listen(process.env.PORT || 3000);
+    const port = process.env.API_PORT || 4000;
+    console.log(`Application is running on: http://localhost:${port}/api`);
+    await app.listen(port);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

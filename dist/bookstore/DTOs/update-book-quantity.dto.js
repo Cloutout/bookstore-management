@@ -9,35 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.quantityOfBookstore = void 0;
+exports.UpdateBookQuantityDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
-class quantityOfBookstore {
+class UpdateBookQuantityDto {
 }
-exports.quantityOfBookstore = quantityOfBookstore;
+exports.UpdateBookQuantityDto = UpdateBookQuantityDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The id of the book',
-        default: 1,
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'The ID of the book.', example: 1 }),
     (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], quantityOfBookstore.prototype, "id", void 0);
+    __metadata("design:type", Number)
+], UpdateBookQuantityDto.prototype, "bookId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The id of the bookstore',
-        default: '1',
-    }),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], quantityOfBookstore.prototype, "bookstoreId", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The quantity of the book in the bookstore',
-        default: 1,
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'The quantity to add or remove.', example: 5 }),
     (0, class_validator_1.IsPositive)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
-], quantityOfBookstore.prototype, "quantity", void 0);
-//# sourceMappingURL=quantity-of-bookstore.js.map
+], UpdateBookQuantityDto.prototype, "quantity", void 0);
+//# sourceMappingURL=update-book-quantity.dto.js.map

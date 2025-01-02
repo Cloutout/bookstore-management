@@ -9,6 +9,8 @@ export class Bookstore {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
-  @OneToMany(() => Availability, (availability) => availability.bookstore)
+  @OneToMany(() => Availability, (availability) => availability.bookstore, {
+    cascade: true,
+  })
   availabilities: Availability[];
 }

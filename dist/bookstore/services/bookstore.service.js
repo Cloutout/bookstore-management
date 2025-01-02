@@ -21,47 +21,64 @@ let BookstoreService = class BookstoreService {
     constructor(repo) {
         this.repo = repo;
     }
-    create(createBookstoreDto) {
-        const item = new bookstore_entity_1.Bookstore();
-        item.title = createBookstoreDto.title;
+    async create(createBookstoreDto) {
+        const item = this.repo.create(createBookstoreDto);
         return this.repo.save(item);
     }
     async findAll() {
         const booksWithQuantities = await this.repo.find({
             relations: ['availabilities', 'availabilities.book'],
         });
-        return booksWithQuantities.map((store) => {
-            return {
-                id: store.id,
-                title: store.title,
-                books: store.availabilities.map((quantity) => ({
-                    id: quantity.book.id,
-                    title: quantity.book.title,
-                    author: quantity.book.author,
-                    quantity: quantity.quantity,
-                    price: quantity.price,
-                })),
-            };
-        });
+        return booksWithQuantities.map((store) => ({
+            id: store.id,
+            title: store.title,
+            books: store.availabilities.map((availability) => ({
+                id: availability.book.id,
+                title: availability.book.title,
+                author: availability.book.author,
+                quantity: availability.quantity,
+                price: availability.price,
+            })),
+        }));
     }
-    findOne(id) {
-        return this.repo.findOneBy({ id });
+    async findOne(id) {
+        const store = await this.repo.findOne({ where: { id } });
+        if (!store) {
+            throw new common_1.NotFoundException('Bookstore not found');
+        }
+        return store;
     }
-    find(id) {
-        return this.repo.find({
+    async updateBookQuantity(bookstoreId, bookId, quantity) {
+        const store = await this.repo.findOne({
+            where: { id: bookstoreId },
             relations: ['availabilities', 'availabilities.book'],
-            where: { id },
-            take: 1,
         });
+        if (!store) {
+            throw new common_1.NotFoundException('Bookstore not found');
+        }
+        const bookAvailability = store.availabilities.find((availability) => availability.book.id === bookId);
+        if (!bookAvailability) {
+            throw new common_1.NotFoundException('Book not available in this bookstore');
+        }
+        bookAvailability.quantity += quantity;
+        if (bookAvailability.quantity < 0) {
+            throw new Error('Quantity cannot be negative');
+        }
+        return this.repo.save(store);
     }
-    update(id, updateBookstoreDto) {
-        const item = new bookstore_entity_1.Bookstore();
-        item.title = updateBookstoreDto.title;
-        item.id = id;
-        return this.repo.save(item);
+    async update(id, updateBookstoreDto) {
+        const store = await this.repo.preload({ id, ...updateBookstoreDto });
+        if (!store) {
+            throw new common_1.NotFoundException('Bookstore not found');
+        }
+        return this.repo.save(store);
     }
-    remove(id) {
-        return this.repo.delete(id);
+    async remove(id) {
+        const result = await this.repo.delete(id);
+        if (result.affected) {
+            return { message: 'Bookstore successfully deleted.' };
+        }
+        throw new common_1.NotFoundException('Bookstore not found');
     }
 };
 exports.BookstoreService = BookstoreService;

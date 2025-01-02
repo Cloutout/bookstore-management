@@ -19,7 +19,6 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Check if the route is public
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -28,33 +27,31 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    // Check if the user is authenticated
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
     }
+
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.SECRET_KEY,
+        secret: process.env.JWT_SECRET || 'secretKey',
       });
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
     }
-    const { user } = context.switchToHttp().getRequest();
 
-    // Check if the user has the required roles
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
-    if (!requiredRoles && user.role?.includes(Role.Admin)) {
+    if (!requiredRoles) {
       return true;
-    } else if (!requiredRoles) {
-      return false;
     }
-    return requiredRoles.some((role) => user.role?.includes(role));
+
+    const user = request['user'];
+    return requiredRoles.some((role) => user.roles?.includes(role));
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

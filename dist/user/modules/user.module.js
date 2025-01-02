@@ -10,7 +10,6 @@ exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("../services/user.service");
 const user_controller_1 = require("../controllers/user.controller");
-const auth_controller_1 = require("../../auth/controllers/auth.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../entities/user.entity");
 const jwt_1 = require("@nestjs/jwt");
@@ -25,12 +24,13 @@ exports.UserModule = UserModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             jwt_1.JwtModule.register({
                 global: true,
-                secret: process.env.SECRET_KEY,
+                secret: process.env.SECRET_KEY || 'defaultSecretKey',
                 signOptions: { expiresIn: '1d' },
             }),
         ],
-        controllers: [user_controller_1.UserController, auth_controller_1.AuthController],
+        controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService],
+        exports: [user_service_1.UserService],
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

@@ -1,84 +1,50 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
 import { BookService } from '../services/book.service';
 import { CreateBookDto } from '../DTOs/create-book.dto';
 import { UpdateBookDto } from '../DTOs/update-book.dto';
-import { Public } from 'src/auth/decorators/public.decorator';
-import {
-  ApiBearerAuth,
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
 import { AssignBookDto } from '../DTOs/assign-book.dto';
-import { Role } from 'src/auth/enums/role.enum';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/role.enum';
 
+@ApiTags('book')
 @Controller('book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Post()
+  @Roles(Role.Admin)
   @ApiBearerAuth()
-  @ApiTags('book')
-  @ApiOperation({
-    summary: 'Create a new book',
-    description: 'Create a new book.',
-  })
-  async create(@Body() createBookDto: CreateBookDto) {
+  @ApiOperation({ summary: 'Create a new book' })
+  create(@Body() createBookDto: CreateBookDto) {
     return this.bookService.create(createBookDto);
   }
 
   @Get()
-  @Public()
-  @ApiTags('book')
-  @ApiOperation({
-    summary: 'Get all books',
-    description: 'Retrieve a list of all books.',
-  })
+  @ApiOperation({ summary: 'Get all books' })
   findAll() {
     return this.bookService.findAll();
   }
 
   @Get(':id')
-  @Public()
-  @ApiTags('book')
-  @ApiOperation({
-    summary: 'Get a book by ID',
-    description: 'Retrieve a book by ID.',
-  })
-  @ApiTags('book')
-  findOne(@Param('id') id: string) {
-    return this.bookService.findOne(+id);
+  @ApiOperation({ summary: 'Get a book by ID' })
+  findOne(@Param('id') id: number) {
+    return this.bookService.findOne(id);
   }
 
-  @ApiExcludeEndpoint()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.bookService.update(+id, updateBookDto);
+  @Roles(Role.Admin)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update a book' })
+  update(@Param('id') id: number, @Body() updateBookDto: UpdateBookDto) {
+    return this.bookService.update(id, updateBookDto);
   }
 
-  @ApiExcludeEndpoint()
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bookService.remove(+id);
-  }
-
-  @ApiTags('book')
-  @Roles(Role.Admin, Role.StoreManager)
-  @ApiOperation({
-    summary: 'Assign a book to a store',
-    description: 'Assign a book to a store.',
-  })
   @Post('assign')
-  async assignBook(@Body() assignBookDto: AssignBookDto) {
+  @Roles(Role.Admin, Role.StoreManager)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Assign a book to a store' })
+  assignBook(@Body() assignBookDto: AssignBookDto) {
     return this.bookService.assignBook(assignBookDto);
   }
 }

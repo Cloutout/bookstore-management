@@ -7,90 +7,64 @@ import {
   Param,
   Delete,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../DTOs/create-user.dto';
 import { UpdateUserDto } from '../DTOs/update-user.dto';
-import { Role } from 'src/auth/enums/role.enum';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import {
-  ApiBearerAuth,
-  ApiExcludeEndpoint,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { Public } from 'src/auth/decorators/public.decorator';
+import { Roles } from '../../auth/decorators/roles.decorator';
+import { AuthGuard } from '../../auth/guards/auth.guard'; // AuthGuard kullanımı
+import { RolesGuard } from '../../auth/guards/roles.guard';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Role } from '../../auth/enums/role.enum';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('seed')
-  @Public()
-  @ApiOperation({
-    summary: 'Seed users',
-    description:
-      'Seed users. Only available in development mode.  [ user@user.com - admin@admin.com - userManager@manager.com ] , password of all: password',
-  })
-  seed() {
-    if (process.env.NODE_ENV !== 'dev') {
-      return 'Seeding is only allowed in development mode';
-    }
-    return this.userService.seed();
-  }
-
   @Get('profile')
-  @ApiTags('user')
-  @Roles(Role.Admin, Role.StoreManager, Role.User)
+  @Roles(Role.User, Role.Admin, Role.StoreManager)
+  @UseGuards(AuthGuard, RolesGuard) // JwtAuthGuard yerine AuthGuard kullanımı
   @ApiBearerAuth()
-  @ApiOperation({
-    summary: 'Get profile',
-    description: 'Get profile of the user.',
-  })
+  @ApiOperation({ summary: 'Get user profile' })
   getProfile(@Request() req) {
     return req.user;
   }
 
   @Post()
-  @Public()
-  @ApiTags('user')
-  @ApiOperation({
-    summary: 'Create a new user',
-    description: 'Create a new user.',
-  })
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a new user' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
-  @ApiOperation({
-    summary: 'Get all users',
-    description: 'Retrieve a list of all users.',
-  })
-  @ApiTags('user')
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiOperation({ summary: 'Get all users' })
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  @ApiExcludeEndpoint()
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
   @Patch(':id')
-  @ApiExcludeEndpoint()
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update user' })
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  @ApiExcludeEndpoint()
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a user' })
+  remove(@Param('id') id: number) {
+    return this.userService.remove(id);
   }
 }

@@ -24,7 +24,7 @@ __decorate([
         example: 'admin@admin.com',
     }),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsEmail)(null, { message: 'Please provide valid Email.' }),
+    (0, class_validator_1.IsEmail)(null, { message: 'Please provide a valid email.' }),
     __metadata("design:type", String)
 ], LoginDto.prototype, "email", void 0);
 __decorate([
@@ -32,7 +32,7 @@ __decorate([
         description: 'Password of the user',
         type: String,
         required: true,
-        example: 'password',
+        example: 'password123',
     }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.Matches)(passwordRegEx, {

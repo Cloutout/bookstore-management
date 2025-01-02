@@ -24,7 +24,9 @@ __decorate([
     __metadata("design:type", String)
 ], Bookstore.prototype, "title", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => availability_entity_1.Availability, (availability) => availability.bookstore),
+    (0, typeorm_1.OneToMany)(() => availability_entity_1.Availability, (availability) => availability.bookstore, {
+        cascade: true,
+    }),
     __metadata("design:type", Array)
 ], Bookstore.prototype, "availabilities", void 0);
 exports.Bookstore = Bookstore = __decorate([

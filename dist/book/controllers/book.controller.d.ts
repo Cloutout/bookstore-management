@@ -7,10 +7,7 @@ export declare class BookController {
     constructor(bookService: BookService);
     create(createBookDto: CreateBookDto): Promise<import("../entities/book.entity").Book>;
     findAll(): Promise<any[]>;
-    findOne(id: string): Promise<import("../entities/book.entity").Book>;
-    update(id: string, updateBookDto: UpdateBookDto): Promise<import("../entities/book.entity").Book>;
-    remove(id: string): Promise<{
-        affected?: number;
-    }>;
-    assignBook(assignBookDto: AssignBookDto): Promise<any[]>;
+    findOne(id: number): Promise<import("../entities/book.entity").Book>;
+    update(id: number, updateBookDto: UpdateBookDto): Promise<import("../entities/book.entity").Book>;
+    assignBook(assignBookDto: AssignBookDto): Promise<any>;
 }

@@ -16,31 +16,22 @@ class AssignBookDto {
 }
 exports.AssignBookDto = AssignBookDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The id of the book',
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'The ID of the book.' }),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], AssignBookDto.prototype, "book_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The id of store',
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'The ID of the store.' }),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], AssignBookDto.prototype, "store_id", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The quantity of the book',
-        default: 1,
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'The quantity of the book.', default: 1 }),
+    (0, class_validator_1.IsPositive)(),
     __metadata("design:type", Number)
 ], AssignBookDto.prototype, "quantity", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The price of the book',
-        default: 0,
-    }),
+    (0, swagger_1.ApiProperty)({ description: 'The price of the book.', default: 0 }),
     __metadata("design:type", Number)
 ], AssignBookDto.prototype, "price", void 0);
 //# sourceMappingURL=assign-book.dto.js.map

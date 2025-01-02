@@ -20,6 +20,7 @@ exports.BookstoreModule = BookstoreModule = __decorate([
         imports: [typeorm_1.TypeOrmModule.forFeature([bookstore_entity_1.Bookstore])],
         controllers: [bookstore_controller_1.BookstoreController],
         providers: [bookstore_service_1.BookstoreService],
+        exports: [bookstore_service_1.BookstoreService],
     })
 ], BookstoreModule);
 //# sourceMappingURL=bookstore.module.js.map

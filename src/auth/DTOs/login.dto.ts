@@ -11,14 +11,14 @@ export class LoginDto {
     example: 'admin@admin.com',
   })
   @IsNotEmpty()
-  @IsEmail(null, { message: 'Please provide valid Email.' })
+  @IsEmail(null, { message: 'Please provide a valid email.' })
   email: string;
 
   @ApiProperty({
     description: 'Password of the user',
     type: String,
     required: true,
-    example: 'password',
+    example: 'password123',
   })
   @IsNotEmpty()
   @Matches(passwordRegEx, {

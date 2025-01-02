@@ -9,9 +9,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const typeorm_1 = require("@nestjs/typeorm");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const typeorm_1 = require("@nestjs/typeorm");
 const user_module_1 = require("./user/modules/user.module");
 const book_module_1 = require("./book/modules/book.module");
 const bookstore_module_1 = require("./bookstore/modules/bookstore.module");
@@ -27,15 +27,15 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            config_1.ConfigModule.forRoot(),
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'postgres',
                 host: process.env.DB_HOST,
                 port: parseInt(process.env.DB_PORT),
-                password: process.env.DB_PASSWORD,
                 username: process.env.DB_USER,
-                entities: [user_entity_1.User, book_entity_1.Book, bookstore_entity_1.Bookstore, availability_entity_1.Availability],
+                password: process.env.DB_PASSWORD,
                 database: process.env.DB_NAME,
+                entities: [user_entity_1.User, book_entity_1.Book, bookstore_entity_1.Bookstore, availability_entity_1.Availability],
                 synchronize: true,
                 logging: true,
             }),

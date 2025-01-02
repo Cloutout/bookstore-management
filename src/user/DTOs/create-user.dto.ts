@@ -10,12 +10,7 @@ import {
 const passwordRegEx = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
 
 export class CreateUserDto {
-  @ApiProperty({
-    description: 'Name of the user',
-    type: String,
-    required: true,
-    example: 'Mert',
-  })
+  @ApiProperty({ description: 'Name of the user', example: 'Mert' })
   @IsString()
   @MinLength(2, { message: 'Name must have at least 2 characters.' })
   @IsNotEmpty()
@@ -23,37 +18,29 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Role of the user',
-    type: String,
-    required: true,
     example: 'user',
     enum: ['user', 'admin', 'storeManager'],
   })
   @IsString()
   @IsNotEmpty()
   @Matches(/^(user|admin|storeManager)$/, {
-    message: 'ًole must be either user, admin or manager',
+    message: 'Role must be either "user", "admin", or "storeManager".',
   })
   role: string = 'user';
 
-  @ApiProperty({
-    description: 'Email of the user',
-    type: String,
-    required: true,
-    example: 'admin@admin.com',
-  })
+  @ApiProperty({ description: 'Email of the user', example: 'admin@admin.com' })
   @IsNotEmpty()
-  @IsEmail(null, { message: 'Please provide valid Email.' })
+  @IsEmail(null, { message: 'Please provide a valid email.' })
   email: string;
 
   @ApiProperty({
     description: 'Password of the user',
-    type: String,
-    required: true,
-    example: 'password',
+    example: 'Password123!',
   })
   @IsNotEmpty()
   @Matches(passwordRegEx, {
-    message: `Password must contain Minimum 8 and maximum 20 characters`,
+    message:
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number.',
   })
   password: string;
 }
