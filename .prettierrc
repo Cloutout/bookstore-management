@@ -1,5 +1,5 @@
 {
   "singleQuote": true,
-  "semi": true,
-  "endOfLine": "auto"
+  "trailingComma": "all",
+  "endOfLine": "crlf"
 }
