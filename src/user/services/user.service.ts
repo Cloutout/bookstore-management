@@ -1,12 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { CreateUserDto } from '../DTOs/create-user.dto';
+import { UpdateUserDto } from '../DTOs/update-user.dto';
 import { User } from '../entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { usersSeed } from '../../user/user.seed';
+import { usersSeed } from 'src/user/user.seed';
 
 @Injectable()
 export class UserService {
@@ -15,13 +15,7 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<User | { message: string }> {
-    const user = await this.repo.findOneBy({ email: createUserDto.email });
-    if (user) {
-      return { message: 'User already exists' };
-    }
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const item: User = new User();
     item.name = createUserDto.name;
     item.email = createUserDto.email;
@@ -59,9 +53,6 @@ export class UserService {
   }
 
   async validateUser(email: string, password: string): Promise<any> {
-    if (email === undefined || password === undefined) {
-      return new UnauthorizedException();
-    }
     const user = await this.repo.findOneBy({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {

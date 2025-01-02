@@ -1,5 +1,5 @@
-import { Book } from 'src/book/entities/book.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Availability } from 'src/book/entities/availability.entity';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Bookstore {
@@ -9,6 +9,6 @@ export class Bookstore {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
-  @OneToMany(() => Book, (book) => book.bookstore)
-  books: Book[];
+  @OneToMany(() => Availability, (availability) => availability.bookstore)
+  availabilities: Availability[];
 }

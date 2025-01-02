@@ -1,10 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-// ** User entity ** //
-// ** This entity will be used to create the users table in the database ** //
-// ** Exclude password from serialization ** //
-
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookstoreController } from './bookstore.controller';
-import { BookstoreService } from '../service/bookstore.service';
+import { BookstoreService } from '../services/bookstore.service';
 
 describe('BookstoreController', () => {
   let controller: BookstoreController;

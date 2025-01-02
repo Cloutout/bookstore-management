@@ -3,14 +3,15 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/modules/user.model';
-import { User } from './user/entities/user.entity';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './auth/auth.guard';
-import { BookstoreModule } from './bookstore/models/bookstore.module';
+import { UserModule } from 'src/user/modules/user.module';
 import { BookModule } from './book/modules/book.module';
+import { BookstoreModule } from './bookstore/modules/bookstore.module';
+import { User } from './user/entities/user.entity';
 import { Book } from './book/entities/book.entity';
 import { Bookstore } from './bookstore/entities/bookstore.entity';
+import { Availability } from './book/entities/availability.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Module({
   imports: [
@@ -21,14 +22,14 @@ import { Bookstore } from './bookstore/entities/bookstore.entity';
       port: parseInt(process.env.DB_PORT),
       password: process.env.DB_PASSWORD,
       username: process.env.DB_USER,
-      entities: [User, Bookstore, Book],
+      entities: [User, Book, Bookstore, Availability],
       database: process.env.DB_NAME,
       synchronize: true,
       logging: true,
     }),
     UserModule,
-    BookstoreModule,
     BookModule,
+    BookstoreModule,
   ],
   controllers: [AppController],
   providers: [

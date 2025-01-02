@@ -1,5 +1,6 @@
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Availability } from './availability.entity';
 import { Bookstore } from 'src/bookstore/entities/bookstore.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Book {
@@ -12,9 +13,13 @@ export class Book {
   @Column({ type: 'varchar', length: 100 })
   author: string;
 
-  @Column({ type: 'int', default: 0 })
-  quantity: number;
+  @OneToMany(() => Availability, (availability) => availability.book)
+  availabilities: Availability[];
 
-  @ManyToOne(() => Bookstore, (bookstore) => bookstore.books)
-  bookstore: Bookstore;
+  get stores(): Bookstore[] {
+    const uniqueStores = this.availabilities?.map(
+      (availability) => availability.bookstore,
+    );
+    return uniqueStores ? Array.from(new Set(uniqueStores)) : [];
+  }
 }

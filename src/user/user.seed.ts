@@ -1,23 +1,20 @@
-import * as bcrypt from 'bcrypt';
-
-// ** Add role to the user seed ** //
 export const usersSeed = [
   {
-    name: 'Admin',
-    email: 'admin@example.com',
-    password: bcrypt.hashSync('password', 10),
-    role: 'admin',
-  },
-  {
-    name: 'User',
-    email: 'user@example.com',
-    password: bcrypt.hashSync('password', 10),
+    name: 'User 1',
+    email: 'user@user.com',
+    password: '$2b$10$OohblTkrJ1CkLME/g9b4muj.DAICa/16wTtHFmkVhBFzC..imT8PS',
     role: 'user',
   },
   {
-    name: 'Manager',
-    email: 'manager@example.com',
-    password: bcrypt.hashSync('password', 10),
-    role: 'manager',
+    name: 'Admin 1',
+    email: 'admin@admin.com',
+    password: '$2b$10$OohblTkrJ1CkLME/g9b4muj.DAICa/16wTtHFmkVhBFzC..imT8PS',
+    role: 'admin',
+  },
+  {
+    name: 'Store Manager 1',
+    email: 'storeManager@manager.com',
+    password: '$2b$10$OohblTkrJ1CkLME/g9b4muj.DAICa/16wTtHFmkVhBFzC..imT8PS',
+    role: 'storeManager',
   },
 ];

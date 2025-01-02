@@ -9,10 +9,10 @@ import {
   Request,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { Role } from '../../auth/enums/role.enum';
-import { Roles } from '../../auth/decorators/roles.decorator';
+import { CreateUserDto } from '../DTOs/create-user.dto';
+import { UpdateUserDto } from '../DTOs/update-user.dto';
+import { Role } from 'src/auth/enums/role.enum';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 import {
   ApiBearerAuth,
   ApiExcludeEndpoint,
@@ -20,7 +20,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Public } from '../../auth/decorators/public.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -31,7 +31,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Seed users',
     description:
-      'Seed users in the database. This endpoint is only available in development mode. It will not work in production. [Admin, StoreManager, User] users will be created. The password for all users is "password". The email for the users will be [ admin@example.com, user@example.com, storeManager@example.com ].',
+      'Seed users. Only available in development mode.  [ user@user.com - admin@admin.com - userManager@manager.com ] , password of all: password',
   })
   seed() {
     if (process.env.NODE_ENV !== 'dev') {
@@ -42,7 +42,7 @@ export class UserController {
 
   @Get('profile')
   @ApiTags('user')
-  @Roles(Role.Admin, Role.Manager, Role.User)
+  @Roles(Role.Admin, Role.StoreManager, Role.User)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get profile',
@@ -53,9 +53,8 @@ export class UserController {
   }
 
   @Post()
+  @Public()
   @ApiTags('user')
-  @Roles(Role.Admin)
-  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create a new user',
     description: 'Create a new user.',
@@ -71,7 +70,6 @@ export class UserController {
     description: 'Retrieve a list of all users.',
   })
   @ApiTags('user')
-  @Roles(Role.Admin, Role.Manager, Role.User)
   @ApiBearerAuth()
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   findAll() {
