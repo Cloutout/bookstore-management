@@ -16,9 +16,9 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
+const bcrypt = require("bcrypt");
 const user_entity_1 = require("../entities/user.entity");
 const jwt_1 = require("@nestjs/jwt");
-const bcrypt = require("bcrypt");
 const user_seed_1 = require("../user.seed");
 let UserService = class UserService {
     constructor(repo, jwtService) {
@@ -50,15 +50,6 @@ let UserService = class UserService {
         const updatedUser = { ...updateUserDto, password: hashedPassword, id };
         return this.repo.save(updatedUser);
     }
-    async hashPassword(password) {
-        return bcrypt.hash(password, 10);
-    }
-    findAll() {
-        return this.repo.find();
-    }
-    findOne(id) {
-        return this.repo.findOneBy({ id });
-    }
     async remove(id) {
         const result = await this.repo.delete(id);
         if (result.affected) {
@@ -66,19 +57,47 @@ let UserService = class UserService {
         }
         throw new Error('User not found.');
     }
+    findAll() {
+        return this.repo.find();
+    }
+    findOne(id) {
+        return this.repo.findOneBy({ id });
+    }
     async validateUser(email, password) {
         const user = await this.repo.findOneBy({ email });
         if (user && (await bcrypt.compare(password, user.password))) {
-            const payload = { sub: user.name, email: user.email, role: user.role };
-            return { access_token: await this.jwtService.signAsync(payload) };
+            const payload = { sub: user.id, email: user.email, role: user.role };
+            return {
+                access_token: await this.jwtService.signAsync(payload),
+            };
         }
         throw new common_1.UnauthorizedException('Invalid email or password.');
     }
     async seed() {
-        if (process.env.NODE_ENV !== 'development') {
+        const currentEnv = process.env.NODE_ENV || 'development';
+        console.log('Current Environment:', currentEnv);
+        if (currentEnv !== 'development') {
             throw new Error('Seeding is only allowed in development mode.');
         }
-        await this.repo.save(user_seed_1.usersSeed);
+        const seedResults = [];
+        for (const user of user_seed_1.usersSeed) {
+            const existingUser = await this.repo.findOneBy({ email: user.email });
+            if (existingUser) {
+                console.log(`User with email ${user.email} already exists.`);
+                continue;
+            }
+            const hashedPassword = await this.hashPassword(user.password);
+            const newUser = this.repo.create({
+                ...user,
+                password: hashedPassword,
+            });
+            seedResults.push(await this.repo.save(newUser));
+        }
+        console.log('Seeding completed:', seedResults.length, 'users added.');
+        return seedResults;
+    }
+    async hashPassword(password) {
+        return bcrypt.hash(password, 10);
     }
 };
 exports.UserService = UserService;

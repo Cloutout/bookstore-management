@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { usersSeed } from 'src/user/user.seed';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../DTOs/create-user.dto';
 import { UpdateUserDto } from '../DTOs/update-user.dto';
@@ -26,9 +25,10 @@ export class UserController {
 
   @Public()
   @Get('seed')
-  @ApiOperation({ summary: 'Get seed users' })
-  getSeedUsers() {
-    return usersSeed;
+  @ApiOperation({ summary: 'Seed users into the database' })
+  async seedUsers() {
+    const result = await this.userService.seed();
+    return { message: 'Users seeded successfully', data: result };
   }
 
   @Post()

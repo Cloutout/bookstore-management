@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
-const user_seed_1 = require("../user.seed");
 const user_service_1 = require("../services/user.service");
 const create_user_dto_1 = require("../DTOs/create-user.dto");
 const update_user_dto_1 = require("../DTOs/update-user.dto");
@@ -28,8 +27,9 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    getSeedUsers() {
-        return user_seed_1.usersSeed;
+    async seedUsers() {
+        const result = await this.userService.seed();
+        return { message: 'Users seeded successfully', data: result };
     }
     create(createUserDto) {
         return this.userService.create(createUserDto);
@@ -48,11 +48,11 @@ exports.UserController = UserController;
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)('seed'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get seed users (public)' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Seed users into the database' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], UserController.prototype, "getSeedUsers", null);
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "seedUsers", null);
 __decorate([
     (0, common_1.Post)(),
     (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
