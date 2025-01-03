@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+ Bookstore Management Application  API using [Nest](https://github.com/nestjs/nest) framework and PostgreSQL.
 
 ## Installation
 
