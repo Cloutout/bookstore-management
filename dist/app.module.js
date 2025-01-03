@@ -19,8 +19,6 @@ const user_entity_1 = require("./user/entities/user.entity");
 const book_entity_1 = require("./book/entities/book.entity");
 const bookstore_entity_1 = require("./bookstore/entities/bookstore.entity");
 const availability_entity_1 = require("./book/entities/availability.entity");
-const core_1 = require("@nestjs/core");
-const auth_guard_1 = require("./auth/guards/auth.guard");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -44,13 +42,7 @@ exports.AppModule = AppModule = __decorate([
             bookstore_module_1.BookstoreModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [
-            app_service_1.AppService,
-            {
-                provide: core_1.APP_GUARD,
-                useClass: auth_guard_1.AuthGuard,
-            },
-        ],
+        providers: [app_service_1.AppService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

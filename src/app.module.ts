@@ -10,8 +10,6 @@ import { User } from './user/entities/user.entity';
 import { Book } from './book/entities/book.entity';
 import { Bookstore } from './bookstore/entities/bookstore.entity';
 import { Availability } from './book/entities/availability.entity';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Module({
   imports: [
@@ -32,12 +30,6 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
     BookstoreModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

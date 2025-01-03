@@ -14,20 +14,17 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
+const user_seed_1 = require("../user.seed");
 const user_service_1 = require("../services/user.service");
 const create_user_dto_1 = require("../DTOs/create-user.dto");
 const update_user_dto_1 = require("../DTOs/update-user.dto");
-const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
-const auth_guard_1 = require("../../auth/guards/auth.guard");
-const roles_guard_1 = require("../../auth/guards/roles.guard");
-const swagger_1 = require("@nestjs/swagger");
-const role_enum_1 = require("../../auth/enums/role.enum");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    getProfile(req) {
-        return req.user;
+    getSeedUsers() {
+        return user_seed_1.usersSeed;
     }
     create(createUserDto) {
         return this.userService.create(createUserDto);
@@ -44,21 +41,14 @@ let UserController = class UserController {
 };
 exports.UserController = UserController;
 __decorate([
-    (0, common_1.Get)('profile'),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.User, role_enum_1.Role.Admin, role_enum_1.Role.StoreManager),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get user profile' }),
-    __param(0, (0, common_1.Request)()),
+    (0, common_1.Get)('seed'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get seed users (public)' }),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], UserController.prototype, "getProfile", null);
+], UserController.prototype, "getSeedUsers", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Create a new user' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -67,9 +57,6 @@ __decorate([
 ], UserController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all users' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -77,9 +64,6 @@ __decorate([
 ], UserController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Update user' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -89,9 +73,6 @@ __decorate([
 ], UserController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Delete a user' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
