@@ -40,7 +40,10 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Email of the user', example: 'admin@admin.com' }),
+    (0, swagger_1.ApiProperty)({
+        description: 'Email of the user',
+        example: 'admin1@admin.com',
+    }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsEmail)(null, { message: 'Please provide a valid email.' }),
     __metadata("design:type", String)

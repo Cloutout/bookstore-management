@@ -28,7 +28,10 @@ export class CreateUserDto {
   })
   role: string = 'admin';
 
-  @ApiProperty({ description: 'Email of the user', example: 'admin@admin.com' })
+  @ApiProperty({
+    description: 'Email of the user',
+    example: 'admin1@admin.com',
+  })
   @IsNotEmpty()
   @IsEmail(null, { message: 'Please provide a valid email.' })
   email: string;
