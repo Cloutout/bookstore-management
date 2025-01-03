@@ -18,8 +18,9 @@ const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
 const bookstore_entity_1 = require("../entities/bookstore.entity");
 let BookstoreService = class BookstoreService {
-    constructor(repo) {
+    constructor(repo, dataSource) {
         this.repo = repo;
+        this.dataSource = dataSource;
     }
     async create(createBookstoreDto) {
         const item = this.repo.create(createBookstoreDto);
@@ -74,17 +75,39 @@ let BookstoreService = class BookstoreService {
         return this.repo.save(store);
     }
     async remove(id) {
-        const result = await this.repo.delete(id);
-        if (result.affected) {
-            return { message: 'Bookstore successfully deleted.' };
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+        try {
+            await queryRunner.manager
+                .createQueryBuilder()
+                .delete()
+                .from('availability')
+                .where('bookstoreId = :id', { id })
+                .execute();
+            await queryRunner.manager
+                .createQueryBuilder()
+                .delete()
+                .from('bookstore')
+                .where('id = :id', { id })
+                .execute();
+            await queryRunner.commitTransaction();
+            return { message: 'Bookstore deleted successfully' };
         }
-        throw new common_1.NotFoundException('Bookstore not found');
+        catch (error) {
+            await queryRunner.rollbackTransaction();
+            throw error;
+        }
+        finally {
+            await queryRunner.release();
+        }
     }
 };
 exports.BookstoreService = BookstoreService;
 exports.BookstoreService = BookstoreService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_2.InjectRepository)(bookstore_entity_1.Bookstore)),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __metadata("design:paramtypes", [typeorm_1.Repository,
+        typeorm_1.DataSource])
 ], BookstoreService);
 //# sourceMappingURL=bookstore.service.js.map

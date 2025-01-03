@@ -10,7 +10,7 @@ import {
 const passwordRegEx = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
 
 export class CreateUserDto {
-  @ApiProperty({ description: 'Name of the user', example: 'Mert' })
+  @ApiProperty({ description: 'Name of the admin', example: 'Mert' })
   @IsString()
   @MinLength(2, { message: 'Name must have at least 2 characters.' })
   @IsNotEmpty()
@@ -18,7 +18,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Role of the user',
-    example: 'user',
+    example: 'admin',
     enum: ['user', 'admin', 'storeManager'],
   })
   @IsString()
@@ -26,7 +26,7 @@ export class CreateUserDto {
   @Matches(/^(user|admin|storeManager)$/, {
     message: 'Role must be either "user", "admin", or "storeManager".',
   })
-  role: string = 'user';
+  role: string = 'admin';
 
   @ApiProperty({ description: 'Email of the user', example: 'admin@admin.com' })
   @IsNotEmpty()

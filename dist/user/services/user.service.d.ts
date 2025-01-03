@@ -14,7 +14,8 @@ export declare class UserService {
     }>;
     findAll(): Promise<User[]>;
     findOne(id: number): Promise<User>;
-    validateUser(email: string, password: string): Promise<any>;
+    findByEmail(email: string): Promise<User | undefined>;
+    validateUser(email: string, pass: string): Promise<any>;
     seed(): Promise<User[]>;
     hashPassword(password: string): Promise<string>;
 }

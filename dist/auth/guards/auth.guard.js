@@ -38,20 +38,20 @@ let AuthGuard = class AuthGuard {
             const payload = await this.jwtService.verifyAsync(token, {
                 secret: jwt_config_1.jwtConfig.secret,
             });
-            request['user'] = payload;
+            request['user'] = {
+                userId: payload.sub,
+                username: payload.username,
+                role: payload.role,
+            };
+            const requiredRoles = this.reflector.getAllAndOverride(roles_decorator_1.ROLES_KEY, [context.getHandler(), context.getClass()]);
+            if (!requiredRoles) {
+                return true;
+            }
+            return requiredRoles.includes(payload.role);
         }
         catch {
             throw new common_1.UnauthorizedException('Invalid or expired token');
         }
-        const requiredRoles = this.reflector.getAllAndOverride(roles_decorator_1.ROLES_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        if (!requiredRoles) {
-            return true;
-        }
-        const user = request['user'];
-        return requiredRoles.some((role) => user.roles?.includes(role));
     }
     extractTokenFromHeader(request) {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];

@@ -19,7 +19,6 @@ const user_service_1 = require("../services/user.service");
 const create_user_dto_1 = require("../DTOs/create-user.dto");
 const update_user_dto_1 = require("../DTOs/update-user.dto");
 const auth_guard_1 = require("../../auth/guards/auth.guard");
-const roles_guard_1 = require("../../auth/guards/roles.guard");
 const roles_decorator_1 = require("../../auth/decorators/roles.decorator");
 const role_enum_1 = require("../../auth/enums/role.enum");
 const public_decorator_1 = require("../../auth/decorators/public.decorator");
@@ -48,7 +47,10 @@ exports.UserController = UserController;
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)('seed'),
-    (0, swagger_1.ApiOperation)({ summary: 'Seed users into the database' }),
+    (0, swagger_1.ApiOperation)({
+        summary: 'Seed initial data into database',
+        description: 'Creates initial users without requiring authentication',
+    }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -56,8 +58,6 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Create a new user' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -66,10 +66,7 @@ __decorate([
 ], UserController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get all users' }),
+    (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin, role_enum_1.Role.User),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -77,8 +74,6 @@ __decorate([
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Update user' }),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
@@ -89,8 +84,6 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, roles_guard_1.RolesGuard),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, swagger_1.ApiOperation)({ summary: 'Delete a user' }),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -99,7 +92,9 @@ __decorate([
 ], UserController.prototype, "remove", null);
 exports.UserController = UserController = __decorate([
     (0, swagger_1.ApiTags)('user'),
+    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.Controller)('user'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

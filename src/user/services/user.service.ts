@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -81,20 +81,25 @@ export class UserService {
   }
 
   /**
+   * Find a user by email
+   */
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.repo.findOne({ where: { email } });
+  }
+
+  /**
    * Validate a user for login
    */
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.repo.findOneBy({ email });
+  async validateUser(email: string, pass: string): Promise<any> {
+    const user = await this.findByEmail(email);
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const payload = { sub: user.id, email: user.email, role: user.role };
-
-      return {
-        access_token: await this.jwtService.signAsync(payload),
-      };
+    if (user && (await bcrypt.compare(pass, user.password))) {
+      // Create new object without password
+      return Object.fromEntries(
+        Object.entries(user).filter(([key]) => key !== 'password'),
+      );
     }
-
-    throw new UnauthorizedException('Invalid email or password.');
+    return null;
   }
 
   /**

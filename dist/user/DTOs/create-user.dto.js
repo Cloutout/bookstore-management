@@ -15,12 +15,12 @@ const class_validator_1 = require("class-validator");
 const passwordRegEx = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
 class CreateUserDto {
     constructor() {
-        this.role = 'user';
+        this.role = 'admin';
     }
 }
 exports.CreateUserDto = CreateUserDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ description: 'Name of the user', example: 'Mert' }),
+    (0, swagger_1.ApiProperty)({ description: 'Name of the admin', example: 'Mert' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(2, { message: 'Name must have at least 2 characters.' }),
     (0, class_validator_1.IsNotEmpty)(),
@@ -29,7 +29,7 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'Role of the user',
-        example: 'user',
+        example: 'admin',
         enum: ['user', 'admin', 'storeManager'],
     }),
     (0, class_validator_1.IsString)(),

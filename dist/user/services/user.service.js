@@ -63,15 +63,15 @@ let UserService = class UserService {
     findOne(id) {
         return this.repo.findOneBy({ id });
     }
-    async validateUser(email, password) {
-        const user = await this.repo.findOneBy({ email });
-        if (user && (await bcrypt.compare(password, user.password))) {
-            const payload = { sub: user.id, email: user.email, role: user.role };
-            return {
-                access_token: await this.jwtService.signAsync(payload),
-            };
+    async findByEmail(email) {
+        return this.repo.findOne({ where: { email } });
+    }
+    async validateUser(email, pass) {
+        const user = await this.findByEmail(email);
+        if (user && (await bcrypt.compare(pass, user.password))) {
+            return Object.fromEntries(Object.entries(user).filter(([key]) => key !== 'password'));
         }
-        throw new common_1.UnauthorizedException('Invalid email or password.');
+        return null;
     }
     async seed() {
         const currentEnv = process.env.NODE_ENV || 'development';

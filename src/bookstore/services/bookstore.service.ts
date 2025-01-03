@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateBookstoreDto } from '../DTOs/create-bookstore.dto';
 import { UpdateBookstoreDto } from '../DTOs/update-bookstore.dto';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bookstore } from '../entities/bookstore.entity';
 
@@ -10,6 +10,7 @@ export class BookstoreService {
   constructor(
     @InjectRepository(Bookstore)
     private readonly repo: Repository<Bookstore>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async create(createBookstoreDto: CreateBookstoreDto): Promise<Bookstore> {
@@ -84,11 +85,35 @@ export class BookstoreService {
     return this.repo.save(store);
   }
 
-  async remove(id: number): Promise<{ message: string }> {
-    const result = await this.repo.delete(id);
-    if (result.affected) {
-      return { message: 'Bookstore successfully deleted.' };
+  async remove(id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // First delete related availability records
+      await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from('availability')
+        .where('bookstoreId = :id', { id })
+        .execute();
+
+      // Then delete the bookstore
+      await queryRunner.manager
+        .createQueryBuilder()
+        .delete()
+        .from('bookstore')
+        .where('id = :id', { id })
+        .execute();
+
+      await queryRunner.commitTransaction();
+      return { message: 'Bookstore deleted successfully' };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
     }
-    throw new NotFoundException('Bookstore not found');
   }
 }
