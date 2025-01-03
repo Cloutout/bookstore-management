@@ -19,6 +19,7 @@ const user_entity_1 = require("./user/entities/user.entity");
 const book_entity_1 = require("./book/entities/book.entity");
 const bookstore_entity_1 = require("./bookstore/entities/bookstore.entity");
 const availability_entity_1 = require("./book/entities/availability.entity");
+const auth_module_1 = require("./auth/modules/auth.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -40,6 +41,7 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             book_module_1.BookModule,
             bookstore_module_1.BookstoreModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -10,6 +10,7 @@ import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import { Role } from '../enums/role.enum';
+import { jwtConfig } from '../config/jwt.config'; // Doğru import
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -24,22 +25,24 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
     if (isPublic) {
-      return true;
+      return true; // Public endpoint'ler için kontrol devre dışı
     }
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        'Token is missing from the Authorization header',
+      );
     }
 
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET || 'secretKey',
+        secret: jwtConfig.secret, // jwtConfig burada kullanılıyor
       });
-      request['user'] = payload;
+      request['user'] = payload; // Kullanıcı bilgileri request'e eklenir
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid or expired token');
     }
 
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
@@ -47,7 +50,7 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
     if (!requiredRoles) {
-      return true;
+      return true; // Roller belirtilmemişse izin ver
     }
 
     const user = request['user'];

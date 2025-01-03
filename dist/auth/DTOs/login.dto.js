@@ -32,7 +32,7 @@ __decorate([
         description: 'Password of the user',
         type: String,
         required: true,
-        example: 'password123',
+        example: 'Password123!',
     }),
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.Matches)(passwordRegEx, {

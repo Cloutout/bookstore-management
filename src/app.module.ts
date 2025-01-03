@@ -3,13 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from 'src/user/modules/user.module';
+import { UserModule } from './user/modules/user.module';
 import { BookModule } from './book/modules/book.module';
 import { BookstoreModule } from './bookstore/modules/bookstore.module';
 import { User } from './user/entities/user.entity';
 import { Book } from './book/entities/book.entity';
 import { Bookstore } from './bookstore/entities/bookstore.entity';
 import { Availability } from './book/entities/availability.entity';
+import { AuthModule } from './auth/modules/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { Availability } from './book/entities/availability.entity';
     UserModule,
     BookModule,
     BookstoreModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

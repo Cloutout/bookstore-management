@@ -18,7 +18,7 @@ export class LoginDto {
     description: 'Password of the user',
     type: String,
     required: true,
-    example: 'password123',
+    example: 'Password123!',
   })
   @IsNotEmpty()
   @Matches(passwordRegEx, {

@@ -82,7 +82,7 @@ __decorate([
     (0, common_1.Post)('assign'),
     (0, roles_decorator_1.Roles)(role_enum_1.Role.Admin, role_enum_1.Role.StoreManager),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Assign a book to a store' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Assign a book to a bookstore' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [assign_book_dto_1.AssignBookDto]),

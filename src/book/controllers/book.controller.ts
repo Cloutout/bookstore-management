@@ -43,7 +43,7 @@ export class BookController {
   @Post('assign')
   @Roles(Role.Admin, Role.StoreManager)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Assign a book to a store' })
+  @ApiOperation({ summary: 'Assign a book to a bookstore' })
   assignBook(@Body() assignBookDto: AssignBookDto) {
     return this.bookService.assignBook(assignBookDto);
   }

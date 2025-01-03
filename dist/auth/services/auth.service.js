@@ -13,6 +13,7 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const user_service_1 = require("../../user/services/user.service");
+const jwt_config_1 = require("../config/jwt.config");
 let AuthService = class AuthService {
     constructor(userService, jwtService) {
         this.userService = userService;
@@ -24,7 +25,12 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('Invalid credentials');
         }
         const payload = { username: user.email, sub: user.id, roles: [user.role] };
-        return { accessToken: this.jwtService.sign(payload) };
+        return {
+            accessToken: this.jwtService.sign(payload, {
+                secret: jwt_config_1.jwtConfig.secret,
+                expiresIn: jwt_config_1.jwtConfig.expiresIn,
+            }),
+        };
     }
 };
 exports.AuthService = AuthService;

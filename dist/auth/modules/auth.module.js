@@ -11,10 +11,10 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const auth_service_1 = require("../services/auth.service");
-const jwt_strategy_1 = require("../strategies/jwt.strategy");
 const auth_controller_1 = require("../controllers/auth.controller");
-const user_module_1 = require("../../user/modules/user.module");
+const jwt_strategy_1 = require("../strategies/jwt.strategy");
 const jwt_config_1 = require("../config/jwt.config");
+const user_module_1 = require("../../user/modules/user.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
